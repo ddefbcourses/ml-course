@@ -1,0 +1,46 @@
+name: CI - ML Pipeline Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download official tests
+        uses: actions/checkout@v3
+        with:
+          repository: ddefbcourses/ml-course-tests
+          path: official-tests
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Override student tests
+        run: |
+          rm -rf assignments/E02/tests
+          cp -r official-tests/assignments/E02/tests assignments/E02/
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Convert notebook to script
+        run: |
+          jupyter nbconvert assignments/E02/E02_Ensemble_Learning.ipynb \
+            --to python \
+            --output notebook.py \
+            --output-dir .
+
+      - name: Run tests
+        run: |
+          pytest assignments/E02/tests -v
