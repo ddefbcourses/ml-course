@@ -2,8 +2,6 @@ name: CI - ML Pipeline Validation
 
 on:
   push:
-    branches-ignore:
-      - main
   pull_request:
 
 jobs:
