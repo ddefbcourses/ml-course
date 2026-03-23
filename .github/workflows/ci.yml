@@ -43,16 +43,3 @@ jobs:
         run: |
           echo "Iniciando execução dos testes..."
           pytest assignments/E02/tests -v --maxfail=3 --disable-warnings || exit 1
-
-      - name: Badge update
-        run: |
-          # Atualiza badge no README
-          BADGE_URL="https://github.com/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/badge.svg"
-          if ! grep -q "CI Badge" README.md; then
-            echo "![CI Badge]($BADGE_URL) <!-- CI Badge -->" >> README.md
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add README.md
-            git commit -m "Adiciona badge CI ao README"
-            git push
-          fi
